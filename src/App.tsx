@@ -12,6 +12,11 @@ import EvidencePage from './ui/pages/EvidencePage';
 import DisposalPage from './ui/pages/DisposalPage';
 import SyncPage from './ui/pages/SyncPage';
 import SelfCheckPage from './ui/pages/SelfCheckPage';
+import CausalEditorPage from './ui/causal/CausalEditorPage';
+import CausalEvidencePage from './ui/causal/CausalEvidencePage';
+import ClaimCalculatorPage from './ui/causal/ClaimCalculatorPage';
+import MissingEvidencePage from './ui/causal/MissingEvidencePage';
+import RobustnessPage from './ui/causal/RobustnessPage';
 
 export default function App() {
   const { user } = useAuth();
@@ -36,6 +41,11 @@ export default function App() {
         <Route path="/disposal" element={<DisposalPage />} />
         <Route path="/sync" element={<SyncPage />} />
         <Route path="/selfcheck" element={<SelfCheckPage />} />
+        <Route path="/causal/editor" element={<CausalEditorPage />} />
+        <Route path="/causal/evidence" element={<CausalEvidencePage />} />
+        <Route path="/causal/claims" element={<ClaimCalculatorPage />} />
+        <Route path="/causal/missing" element={<MissingEvidencePage />} />
+        <Route path="/causal/robustness" element={<RobustnessPage />} />
         <Route path="*" element={<Navigate to="/loader" replace />} />
       </Route>
     </Routes>

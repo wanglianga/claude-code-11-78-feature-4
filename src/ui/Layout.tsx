@@ -27,6 +27,16 @@ const NAV_GROUPS: Array<{ title: string; items: Array<{ to: string; label: strin
       { to: '/selfcheck', label: '自检与验证' },
     ],
   },
+  {
+    title: '因果推断（汛期进水）',
+    items: [
+      { to: '/causal/editor', label: '因果假设图编辑器' },
+      { to: '/causal/evidence', label: '证据语义标注册' },
+      { to: '/causal/claims', label: '支持/反驳与主张区间' },
+      { to: '/causal/missing', label: '缺证传播器' },
+      { to: '/causal/robustness', label: '结论稳健性台' },
+    ],
+  },
 ];
 
 export default function Layout() {

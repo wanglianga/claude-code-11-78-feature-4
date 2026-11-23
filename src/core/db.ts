@@ -18,7 +18,7 @@ import type {
 } from './types';
 
 const DB_NAME = 'gas-consistency-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 export const STORES = {
   raw: 'raw_records',
@@ -34,6 +34,12 @@ export const STORES = {
   conflicts: 'sync_conflicts',
   reports: 'sync_reports',
   meta: 'meta',
+  // 因果推断子系统
+  causalGraph: 'causal_graph',
+  causalEvidence: 'causal_evidence',
+  causalClusters: 'causal_clusters',
+  causalVersions: 'causal_versions',
+  causalRationale: 'causal_rationale',
 } as const;
 
 let dbPromise: Promise<IDBDatabase> | null = null;
@@ -45,6 +51,8 @@ export function openDb(): Promise<IDBDatabase> {
     req.onupgradeneeded = () => {
       const db = req.result;
       const make = (name: string, keyPath: string, indexes: [string, string][]) => {
+        // v1→v2 升级时旧库已存在同名仓库，跳过创建，仅补齐新仓库
+        if (db.objectStoreNames.contains(name)) return;
         const store = db.createObjectStore(name, { keyPath });
         for (const [idx, field] of indexes) store.createIndex(idx, field);
       };
@@ -81,6 +89,16 @@ export function openDb(): Promise<IDBDatabase> {
       ]);
       make(STORES.reports, 'id', []);
       make(STORES.meta, 'key', []);
+      // 因果推断子系统（DB v2 新增）
+      make(STORES.causalGraph, 'id', []);
+      make(STORES.causalEvidence, 'id', [
+        ['by_cluster', 'clusterId'],
+        ['by_claim', 'claimId'],
+        ['by_observable', 'observableKey'],
+      ]);
+      make(STORES.causalClusters, 'id', []);
+      make(STORES.causalVersions, 'id', [['by_frozen', 'frozen']]);
+      make(STORES.causalRationale, 'id', [['by_event', 'eventRef'], ['by_version', 'inferenceVersionId']]);
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);

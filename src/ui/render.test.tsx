@@ -10,6 +10,7 @@ import { renderToString } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../state/auth';
 import { AppProvider } from '../state/app';
+import { CausalProvider } from '../state/causal';
 import LoginPage from '../ui/pages/LoginPage';
 import LoaderPage from '../ui/pages/LoaderPage';
 import AlignmentPage from '../ui/pages/AlignmentPage';
@@ -21,6 +22,11 @@ import EvidencePage from '../ui/pages/EvidencePage';
 import DisposalPage from '../ui/pages/DisposalPage';
 import SyncPage from '../ui/pages/SyncPage';
 import SelfCheckPage from '../ui/pages/SelfCheckPage';
+import CausalEditorPage from '../ui/causal/CausalEditorPage';
+import CausalEvidencePage from '../ui/causal/CausalEvidencePage';
+import ClaimCalculatorPage from '../ui/causal/ClaimCalculatorPage';
+import MissingEvidencePage from '../ui/causal/MissingEvidencePage';
+import RobustnessPage from '../ui/causal/RobustnessPage';
 
 beforeAll(() => {
   const store = new Map<string, string>();
@@ -38,7 +44,9 @@ function render(el: React.ReactElement) {
   return renderToString(
     <MemoryRouter>
       <AuthProvider>
-        <AppProvider>{el}</AppProvider>
+        <AppProvider>
+          <CausalProvider>{el}</CausalProvider>
+        </AppProvider>
       </AuthProvider>
     </MemoryRouter>,
   );
@@ -57,6 +65,11 @@ describe('页面组件渲染冒烟', () => {
     ['处置簿页', <DisposalPage key="disposal" />],
     ['同步对照页', <SyncPage key="sync" />],
     ['自检页', <SelfCheckPage key="selfcheck" />],
+    ['因果图编辑器页', <CausalEditorPage key="cg-editor" />],
+    ['证据语义标注册页', <CausalEvidencePage key="cg-evidence" />],
+    ['主张计算器页', <ClaimCalculatorPage key="cg-claims" />],
+    ['缺证传播器页', <MissingEvidencePage key="cg-missing" />],
+    ['稳健性台页', <RobustnessPage key="cg-robust" />],
   ];
 
   for (const [name, el] of pages) {
